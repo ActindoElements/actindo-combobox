@@ -1,9 +1,16 @@
+<!--
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../polymer/lib/utils/debounce.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">-->
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/polymer/polymer.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/polymer/lib/utils/debounce.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-icon-button/paper-icon-button.html">
 <dom-module id="actindo-combobox">
     <template>
         <style>
@@ -237,21 +244,12 @@
                     },
 
                     /**
-                     * General value propery
+                     * Contains the content of the value field of the selected item
                      */
                     value: {
                         type: String,
                         notify: true,
                         observer: "valueChanged"
-                    },
-
-                    /**
-                     * Contains the content of the value field of the selected item
-                     */
-                    selectedValue: {
-                        type: String,
-                        notify: true,
-                        observer: "selectedValueChanged"
                     },
 
                     /**
@@ -263,7 +261,7 @@
                     },
 
                     /**
-                     * Determines which fields is used to fill the selectedValue field
+                     * Determines which fields is used to fill the value field
                      */
                     valueField: {
                         type: String,
@@ -468,16 +466,6 @@
             }
 
             /**
-             * Set value for selected value
-             *
-             * @param {String} newValue
-             */
-            valueChanged( newValue )
-            {
-                this.set("selectedValue", newValue)
-            }
-
-            /**
              * Remove style of selectedItem
              *
              * @param {Object} _selectedItem
@@ -497,10 +485,10 @@
             _onPaperItemTap(e)
             {
                 let me = this;
-                if( e.model.get("item."+this.valueField) === this.selectedValue && this.allowDeselect )
+                if( e.model.get("item."+this.valueField) === this.value && this.allowDeselect )
                 {
                     me.set("selected", null);
-                    me.set( "selectedValue", null );
+                    me.set( "value", null );
                     e.stopPropagation();
                     this.$.dropdown.close();
                 }
@@ -743,7 +731,7 @@
                 //No lets reconstruct the selected variable
                 for(let i=0;i<this.items.length;i++)
                 {
-                    if( Polymer.Path.get( this.items[i], this.valueField ) === this.selectedValue )
+                    if( Polymer.Path.get( this.items[i], this.valueField ) === this.value )
                     {
                         if( !this.searchable )
                         {
@@ -822,7 +810,7 @@
              * @param {String} oldValue
              * @private
              */
-            selectedValueChanged( newValue, oldValue )
+            valueChanged( newValue, oldValue )
             {
                 if( !newValue )
                 {
@@ -845,15 +833,11 @@
                         break;
                     }
                 }
-                if( !found )
-                {
-                    this.selectedValue = null;
-                }
             }
 
             /**
              * selected row has been changed
-             * we set the correct selectedValue and _selectedItem (that we need to restore item if remote filter removed selected item)
+             * we set the correct value and _selectedItem (that we need to restore item if remote filter removed selected item)
              *
              * @param {Number} newValue
              * @param {Number} oldValue
@@ -868,12 +852,12 @@
                 }
                 if( newValue === null || !this.items[value] ) {
                     this.set("_selectedItem", null);
-                    this.set("selectedValue", null);
+                    this.set("value", null);
                     return;
                 }
                 let item = this.items[value];
                 this.set("_selectedItem", item);
-                this.selectedValue = Polymer.Path.get( item, this.valueField );
+                this.value = Polymer.Path.get( item, this.valueField );
             }
 
             /**
