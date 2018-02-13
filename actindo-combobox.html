@@ -106,6 +106,7 @@
 
 
         <paper-dropdown-menu
+                required="[[required]]"
                 label="{{label}}"
                 verticalAlign="bottom"
                 id="dropdown"
@@ -115,6 +116,8 @@
                 horizontal-align="[[horizontalAlign]]"
                 vertical-align="[[verticalAlign]]"
                 disabled="[[disabled]]"
+                invalid="{{invalid}}"
+                error-message="[[errorMessage]]"
         >
             <paper-listbox slot="dropdown-content" selected="{{selected}}">
                 <template is="dom-if" if="{{searchable}}">
@@ -188,6 +191,22 @@
                      * Label of the combobox
                      */
                     label: {
+                        type: String
+                    },
+
+                    /**
+                     * Determines if valud is valid
+                     */
+                    invalid: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+
+                    /**
+                     * Error message displayed if value is not valid
+                     */
+                    errorMessage: {
                         type: String
                     },
 
@@ -412,6 +431,14 @@
                     },
 
                     /**
+                     * Determines if an item has to be selected
+                     */
+                    required: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    /**
                      * Set to true to disable animations when opening and closing the
                      * dropdown.
                      */
@@ -521,6 +548,12 @@
             nextPage(e) {
                 e.stopPropagation();
                 this.page = Math.max(1, Math.min(this.page + 1, Math.ceil(this.totalItems / this.itemsPerPage)));
+            }
+
+            validate()
+            {
+                this.invalid = !this.$.dropdown.validate();
+                return !this.invalid;
             }
 
             /**

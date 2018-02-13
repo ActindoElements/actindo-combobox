@@ -10,7 +10,7 @@
             items="[[items]]"
             display-field="value"
             value-field="key"
-            selected-value="{{selectedValue}}"
+            value="{{selectedValue}}"
             selected-item="{{selectedItem}}"
             searchable
             allow-deselect
@@ -51,7 +51,7 @@
     </script>
 </dom-module> 
 ```
-The value field of the selected item will be stored in selected-value while the whole item is stored in selected-item.  
+The value field of the selected item will be stored in value while the whole item is stored in selected-item.  
 The display field's value is shown per item.  
 The optional render function gives the developer flexibility in defining how the items are displayed.  
 
@@ -67,7 +67,7 @@ When setting *remote* the combobox will load the data from remote supporting pag
             params="[[params]]"
             display-field="value"
             value-field="key"
-            selected-value="{{selectedValue}}"
+            value="{{selectedValue}}"
             selected-item="{{selectedItem}}"
             items-per-page="25"
             remote-search
