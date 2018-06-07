@@ -136,8 +136,29 @@
             {
                 display: none;
             }
-        </style>
+            .container
+            {
+                display: flex;
+            }
+            paper-dropdown-menu
+            {
+                --paper-dropdown-menu-button:
+                {
+                    padding-left: 45px;
+                }
 
+            }
+            .prefix ::slotted(*)
+            {
+                position: absolute;
+                top: 5px;
+                left: 0;
+                @apply(--paper-dropdown-menu-input);
+            }
+        </style>
+        <div class="prefix">
+            <slot name="prefix"></slot>
+        </div>
         <paper-dropdown-menu
                 required="[[required]]"
                 label="{{label}}"
@@ -152,7 +173,7 @@
                 invalid="{{invalid}}"
                 error-message="[[errorMessage]]"
         >
-            <slot name="prefix" slot="prefix"></slot>
+
             <paper-listbox slot="dropdown-content" selected="{{selected}}">
                 <template is="dom-if" if="{{searchable}}">
                     <iron-input
