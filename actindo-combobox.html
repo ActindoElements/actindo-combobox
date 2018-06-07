@@ -144,16 +144,17 @@
             {
                 --paper-dropdown-menu-button:
                 {
-                    padding-left: 45px;
+                    /*padding-left: 45px;*/
                 }
 
             }
-            .prefix ::slotted(*)
+            .prefix
             {
+                display: flex;
+                align-items:center;
                 position: absolute;
-                top: 5px;
-                left: 0;
-                @apply(--paper-dropdown-menu-input);
+                top: 0;
+                bottom: 0;
             }
         </style>
         <div class="prefix">
