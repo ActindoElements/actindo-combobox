@@ -1,12 +1,6 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
-<link rel="import" href="../paper-item/paper-item.html">
-<link rel="import" href="../polymer/lib/utils/debounce.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="actindo-dropdown-menu.html">
 <link rel="import" href="actindo-dropdown-trigger-multi.html">
-<dom-module id="actindo-combobox">
+<dom-module id="actindo-combobox2">
     <template>
         <style>
             :host([multi]) paper-item.iron-selected {
@@ -38,7 +32,7 @@
                 };
             }
 
-            actindo-dropdown-menu
+            actindo-dropdown-menu2
             {
                 --paper-dropdown-menu-button: {
                     left: 0;
@@ -169,7 +163,7 @@
             }
         </style>
 
-        <actindo-dropdown-menu
+        <actindo-dropdown-menu2
                 required="[[required]]"
                 label="{{label}}"
                 id="dropdown"
@@ -186,31 +180,31 @@
         >
             <slot name="prefix" slot="prefix"></slot>
             <template is="dom-if" if="[[multi]]">
-                <actindo-dropdown-trigger-multi
-                    slot="dropdown-trigger"
-                    class="dropdown-trigger multi"
-                    value="[[selectedItems]]"
-                    display-field="[[displayField]]"
-                    selected-values="{{selectedValues}}"
-                    invalid="[[invalid]]"
-                    readonly
-                    disabled="[[disabled]]"
-                    value="[[selectedItemLabel]]"
-                    label="[[label]]"
-                    placeholder="[[placeholder]]"
-                    error-message="[[errorMessage]]"
-                    always-float-label="[[alwaysFloatLabel]]"
-                    no-label-float="[[noLabelFloat]]"
+                <actindo-dropdown-trigger-multi2
+                        slot="dropdown-trigger"
+                        class="dropdown-trigger multi"
+                        value="[[selectedItems]]"
+                        display-field="[[displayField]]"
+                        selected-values="{{selectedValues}}"
+                        invalid="[[invalid]]"
+                        readonly
+                        disabled="[[disabled]]"
+                        value="[[selectedItemLabel]]"
+                        label="[[label]]"
+                        placeholder="[[placeholder]]"
+                        error-message="[[errorMessage]]"
+                        always-float-label="[[alwaysFloatLabel]]"
+                        no-label-float="[[noLabelFloat]]"
                 >
 
-                </actindo-dropdown-trigger-multi>
+                </actindo-dropdown-trigger-multi2>
             </template>
             <paper-listbox
-                slot="dropdown-content"
-                selected="{{selected}}"
-                selected-values="{{selectedValues}}"
-                selected-items="{{selectedNodes}}"
-                multi="[[multi]]"
+                    slot="dropdown-content"
+                    selected="{{selected}}"
+                    selected-values="{{selectedValues}}"
+                    selected-items="{{selectedNodes}}"
+                    multi="[[multi]]"
             >
                 <template is="dom-if" if="{{searchable}}">
                     <iron-input
@@ -234,15 +228,15 @@
                             label$="[[_getItemLabel(item.*)]]"
                             item-value="[[_getValue(item.*)]]"
                             item="[[item]]">
-                            <div class="list-item-display">
-                                [[_getDisplayValue(item.*)]]
-                            </div>
+                        <div class="list-item-display">
+                            [[_getDisplayValue(item.*)]]
+                        </div>
 
-                            <span class="list-item-description">[[_getDisplayValueDescription(item.*)]]</span>
+                        <span class="list-item-description">[[_getDisplayValueDescription(item.*)]]</span>
                     </paper-item>
                 </template>
 
-                <div class$="loadingContainer visible-[[_loading]]"></div>
+                <!--<div class$="loadingContainer visible-[[_loading]]"></div>-->
                 <div class$="paging visible-[[_paged]]" style="z-index: 2" on-tap="_stopEventPropagation" on-click="_stopEventPropagation">
                     <div>
                         [[_getItemsFrom(page, itemsPerPage, totalItems)]]-[[_getItemsTo(page, itemsPerPage, totalItems)]] <span style="opacity: 0.72">of [[totalItems]]</span>
@@ -255,13 +249,13 @@
                     </div>
                 </div>
             </paper-listbox>
-        </actindo-dropdown-menu>
+        </actindo-dropdown-menu2>
     </template>
     <script>
-        class ActindoCombobox extends Polymer.Element {
+        class ActindoCombobox2 extends Polymer.Element {
             static get is()
             {
-                return "actindo-combobox";
+                return "actindo-combobox2";
             }
             static get properties()
             {
@@ -359,6 +353,12 @@
                         type: String | Array,
                         notify: true,
                         observer: "valueChanged"
+                    },
+
+                    _value: {
+                        type: String | Array,
+                        notify: true,
+                        observer: "_valueChanged"
                     },
 
                     /**
@@ -575,7 +575,7 @@
 
                     verticalOffset: {
                         type: Number,
-                        value: 62
+                        value: 62//@Todo handle not-searchable
                     },
 
                     /**
@@ -586,7 +586,7 @@
                         type: String,
                         value: 'right'
                     },
-                    
+
                     /**
                      * Determines if the box is multi select
                      */
@@ -594,7 +594,7 @@
                         type: Boolean,
                         value: false
                     },
-                    
+
                     selectedValues: {
                         type: Array,
                         value: function(){ return [] },
@@ -612,15 +612,20 @@
              *
              * @private
              */
-            _onSelectedNodesChanged(selectedNodes)
-            {
+            _onSelectedNodesChanged(selectedNodes) {
                 const selectedItems = selectedNodes.map(node => node.item);
                 const value = selectedItems.map(item => {
-                    return Polymer.Path.get( item, this.valueField )
+                    return Polymer.Path.get(item, this.valueField)
                 });
-
+                if (value.length === 1 && !value[0])
+                {
+                    return;
+                    console.alert('MOOOOO');
+                    console.log(selectedNodes);
+                    console.log(value);
+                }
                 this.setProperties({
-                    value: value,
+                    _value: value,
                     selectedItems: selectedItems
                 })
             }
@@ -645,7 +650,7 @@
             _onPaperItemTap(e)
             {
                 let me = this;
-                if( e.model.get("item."+this.valueField) === this.value && this.allowDeselect )
+                if( e.model.get("item."+this.valueField) === this._value && this.allowDeselect )
                 {
                     me.set("selected", null);
                     me.set( "value", null );
@@ -909,7 +914,7 @@
                 //No lets reconstruct the selected variable
                 for(let i=0;i<this.items.length;i++)
                 {
-                    if( Polymer.Path.get( this.items[i], this.valueField ) === this.value )
+                    if( Polymer.Path.get( this.items[i], this.valueField ) === this._value )
                     {
                         if( !this.searchable )
                         {
@@ -1010,6 +1015,23 @@
                 return null;
             }
 
+            valueChanged( newValue, oldValue)
+            {
+                console.log(this.id, 'value changed', newValue,oldValue);
+                if(!newValue && !oldValue)
+                {
+                    return;
+                }
+                if(newValue)
+                {
+                    this.set('_value',[newValue]);
+                }
+                else
+                {
+                    this.set('_value',[]);
+                }
+            }
+
             /**
              * selected values has been changed; if this happens by data binding we select the correct record
              *
@@ -1017,8 +1039,9 @@
              * @param {String} oldValue
              * @private
              */
-            valueChanged( newValue, oldValue )
+            _valueChanged( newValue, oldValue )
             {
+                console.log(this.id, 'old changed', newValue,oldValue, 'multi', this.multi);
                 if (this.multi)
                 {
                     this._handleValueChangedMultiSelection(newValue, oldValue);
@@ -1039,7 +1062,7 @@
                 {
                     this.selectedValues = [];
                 }
-                 if( this.items )
+                if( this.items )
                 {
                     const selected = [];
                     for(let i=0;i<this.items.length;i++)
@@ -1058,39 +1081,62 @@
                         }
                     }
                     this.selectedValues = selected;
+                    console.log(this.id, newValue);
+                    this.set('value', newValue);
                 }
             }
 
             _handleValueChangedSingleSelection(newValue, oldValue)
             {
-                if( newValue === undefined || newValue === null )
+                console.log("combo _handleValueChangedSingleSelection",newValue, oldValue);
+                if(Array.isArray(newValue) && Array.isArray(oldValue) &&
+                        newValue.length===0 && oldValue.length===0
+                )
+                {
+                    return;
+                }
+                if (newValue === undefined ||
+                    newValue === null ||
+                    (Array.isArray(newValue) && newValue.length === 0))
                 {
                     this.selected = null;
+                    return;
                 }
                 let found = false;
                 if( this.items )
                 {
+                    console.log('items', this.items);
+                    let selected = null;
                     for(let i=0;i<this.items.length;i++)
                     {
-                        if( Polymer.Path.get( this.items[i], this.valueField ) === newValue )
+                        if( Polymer.Path.get( this.items[i], this.valueField ) === newValue[0] )
                         {
                             found = true;
                             if( this.searchable )
                             {
-                                this.selected = i+1;
+                                selected = i+1;
                             }
                             else
                             {
-                                this.selected = i;
+                                selected = i;
                             }
                             break;
                         }
+
+                    }
+                    if( !found )
+                    {
+                        this._value = null;
+                    }else{
+                        this.set('selected', selected);
+                    }
+                    if(Array.isArray(newValue)){
+                        this.set('value', newValue[0]);
+                    }else{
+                        this.set('value', newValue);
                     }
                 }
-                if( !found )
-                {
-//                    this.value = null;
-                }
+
             }
 
             /**
@@ -1110,12 +1156,12 @@
                 }
                 if( newValue === null || !this.items[value] ) {
                     this.set("_selectedItem", null);
-                    this.set("value", null);
+                    this.set("_value", []);
                     return;
                 }
                 let item = this.items[value];
                 this.set("_selectedItem", item);
-                this.value = Polymer.Path.get( item, this.valueField );
+                this._value = Polymer.Path.get( item, this.valueField );
             }
 
             /**
@@ -1251,6 +1297,6 @@
             }
 
         }
-        customElements.define( ActindoCombobox.is, ActindoCombobox );
+        customElements.define( ActindoCombobox2.is, ActindoCombobox2 );
     </script>
 </dom-module>

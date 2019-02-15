@@ -1,6 +1,6 @@
 <link rel="import" href="actindo-combobox-chip.html">
 
-<dom-module id="actindo-dropdown-trigger-multi">
+<dom-module id="actindo-dropdown-trigger-multi2">
     <template>
         <style>
             input {
@@ -40,11 +40,11 @@
             <label hidden$="[[_computeLabelVisibility(label)]]" aria-hidden="true" for="input"  slot="label">[[label]]</label>
             <div slot="input" class$="container has-value-[[hasValue]]">
                 <template is="dom-repeat" items="{{value}}" as="item">
-                    <actindo-combobox-chip
+                    <actindo-combobox-chip2
                         active="{{active}}"
                         on-remove="_remove"
                         class="chip"
-                    >[[_getDisplayValue(item.*)]]</actindo-combobox-chip>
+                    >[[_getDisplayValue(item.*)]]</actindo-combobox-chip2>
                 </template>
                 <iron-input id="input">
                     <input id="nativeInput" placeholder="">
@@ -53,12 +53,12 @@
         </paper-input-container>
     </template>
     <script>
-        class ActindoDropdownTriggerMulti extends
+        class ActindoDropdownTriggerMulti2 extends
             Polymer.mixinBehaviors(Polymer.IronA11yKeysBehavior,
                             Polymer.mixinBehaviors(Polymer.PaperInputBehavior, Polymer.Element)) {
 
             static get is() {
-                return 'actindo-dropdown-trigger-multi';
+                return 'actindo-dropdown-trigger-multi2';
             }
             static get properties() {
                 return {
@@ -120,6 +120,6 @@
             }
 
         }
-        customElements.define(ActindoDropdownTriggerMulti.is, ActindoDropdownTriggerMulti);
+        customElements.define(ActindoDropdownTriggerMulti2.is, ActindoDropdownTriggerMulti2);
     </script>
 </dom-module>

@@ -55,7 +55,7 @@ respectively.
 @demo demo/index.html
 -->
 
-<dom-module id="actindo-dropdown-menu">
+<dom-module id="actindo-dropdown-menu2">
   <template>
     <style include="paper-dropdown-menu-shared-styles">
         paper-menu-button[multi] {
@@ -113,7 +113,7 @@ respectively.
     (function() {
       'use strict';
       Polymer({
-        is: 'actindo-dropdown-menu',
+        is: 'actindo-dropdown-menu2',
         behaviors: [
           Polymer.IronButtonState,
           Polymer.IronControlState,
@@ -342,10 +342,11 @@ respectively.
          */
         _selectedItemChanged: function(selectedItems) {
           var value = '';
+
           if (selectedItems.length) {
             value = selectedItems.map((item) => {
               return item && (item.label || item.getAttribute('label') || item.textContent.trim());
-            }).join(', ');
+            }).join(',');
           }
           this._setValue(value);
           this._setSelectedItemLabel(value);
